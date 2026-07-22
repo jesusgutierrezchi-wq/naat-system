@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NAAT SYSTEM | Transformación Digital Segura</title>
 
+    <!-- Aplica el tema guardado antes del primer render para evitar parpadeo -->
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('naat-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+
     <!-- Fuente Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
@@ -22,10 +33,17 @@
             --font-sans: 'Inter', sans-serif;
         }
 
+        /* Modo oscuro activado por clase (.dark en <html>) en vez de prefers-color-scheme */
+        @custom-variant dark (&:where(.dark, .dark *));
+
         /* Compensa el header sticky al saltar a un ancla (#services, #details, etc.) */
         html {
             scroll-padding-top: 110px;
             scroll-behavior: smooth;
+        }
+
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* Animación para los gráficos flotantes */
@@ -48,6 +66,9 @@
         /* Efecto Neumorfismo (3D) para Iconos */
         .shadow-3d {
             box-shadow: 8px 8px 16px #d1d5db, -8px -8px 16px #ffffff;
+        }
+        .dark .shadow-3d {
+            box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.45), -8px -8px 16px rgba(255, 255, 255, 0.04);
         }
 
         /* Animaciones al hacer scroll (Reveal) */
@@ -86,6 +107,21 @@
         .lang-btn.active {
             background-color: var(--color-primary);
             color: #ffffff;
+        }
+        .dark .lang-btn {
+            color: #94a3b8;
+        }
+
+        /* Selector de Tema: FontAwesome fija "display" fuera de las @layer de Tailwind,
+           lo que siempre gana sobre dark:hidden/dark:block; se resuelve con CSS plano. */
+        #theme-toggle .fa-sun {
+            display: none;
+        }
+        .dark #theme-toggle .fa-sun {
+            display: inline-block;
+        }
+        .dark #theme-toggle .fa-moon {
+            display: none;
         }
 
         /* Carrusel de Tecnologías */
@@ -131,21 +167,21 @@
 
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-primary selection:text-white overflow-x-hidden">
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-primary selection:text-white overflow-x-hidden">
 
     <!-- Header / Nav -->
-    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200 transition-all">
+    <header class="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-slate-200 dark:border-slate-800 transition-all">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#" class="block">
-                <img src="imagen-transparente.png" alt="NAAT System Logo" class="h-12 md:h-16 object-contain">
+                <img src="imagen-transparente.png" alt="NAAT System Logo" class="h-12 md:h-16 object-contain dark:bg-white dark:rounded-xl dark:p-1.5">
             </a>
 
             <nav class="hidden lg:flex gap-6">
-                <a href="#about" class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors" data-i18n="nav.about">NOSOTROS</a>
-                <a href="#services" class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors" data-i18n="nav.services">SERVICIOS</a>
-                <a href="#details" class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors" data-i18n="nav.solutions">SOLUCIONES</a>
-                <a href="#technologies" class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors" data-i18n="nav.tech">TECNOLOGÍAS</a>
-                <a href="#certifications" class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors" data-i18n="nav.cert">CERTIFICACIONES</a>
+                <a href="#about" class="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" data-i18n="nav.about">NOSOTROS</a>
+                <a href="#services" class="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" data-i18n="nav.services">SERVICIOS</a>
+                <a href="#details" class="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" data-i18n="nav.solutions">SOLUCIONES</a>
+                <a href="#technologies" class="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" data-i18n="nav.tech">TECNOLOGÍAS</a>
+                <a href="#certifications" class="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" data-i18n="nav.cert">CERTIFICACIONES</a>
             </nav>
 
             <div class="flex items-center gap-4">
@@ -154,13 +190,19 @@
                 </a>
 
                 <!-- Selector de Idioma -->
-                <div class="flex items-center gap-1 border border-slate-200 rounded-full p-1">
+                <div class="flex items-center gap-1 border border-slate-200 dark:border-slate-700 rounded-full p-1">
                     <button type="button" data-lang-btn="es" class="lang-btn px-3 py-1 rounded-full text-xs font-bold transition-colors">ES</button>
                     <button type="button" data-lang-btn="en" class="lang-btn px-3 py-1 rounded-full text-xs font-bold transition-colors">EN</button>
                 </div>
 
+                <!-- Selector de Tema -->
+                <button type="button" id="theme-toggle" aria-label="Cambiar tema" class="w-9 h-9 shrink-0 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-primary hover:border-primary transition-colors">
+                    <i class="fa-solid fa-moon text-sm"></i>
+                    <i class="fa-solid fa-sun text-sm"></i>
+                </button>
+
                 <!-- Mobile menu button -->
-                <button class="lg:hidden text-slate-600 text-2xl">
+                <button class="lg:hidden text-slate-600 dark:text-slate-300 text-2xl">
                     <i class="fa-solid fa-bars"></i>
                 </button>
             </div>
@@ -205,36 +247,36 @@
         <!-- Services Section with Stylish 3D Icons -->
         <section id="services" class="relative z-20 max-w-7xl mx-auto px-6 -mt-24 grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Service Card 1 -->
-            <div class="bg-white rounded-3xl p-10 shadow-xl shadow-slate-200/50 hover:-translate-y-3 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center group reveal">
-                <div class="w-20 h-20 bg-gradient-to-br from-white to-slate-100 rounded-2xl flex items-center justify-center mb-8 shadow-3d animate-float">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-10 shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 hover:-translate-y-3 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center group reveal">
+                <div class="w-20 h-20 bg-gradient-to-br from-white to-slate-100 dark:from-slate-700 dark:to-slate-800 rounded-2xl flex items-center justify-center mb-8 shadow-3d animate-float">
                     <i class="fa-solid fa-code text-3xl text-primary drop-shadow-md"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-3 text-slate-800" data-i18n="svc.software.badge">SOFTWARE</h3>
-                <p class="text-slate-500 mb-6 flex-grow" data-i18n="svc.software.desc">Aplicaciones escalables construidas con metodologías robustas y ágiles para empresas modernas.</p>
+                <h3 class="text-xl font-bold mb-3 text-slate-800 dark:text-slate-100" data-i18n="svc.software.badge">SOFTWARE</h3>
+                <p class="text-slate-500 dark:text-slate-400 mb-6 flex-grow" data-i18n="svc.software.desc">Aplicaciones escalables construidas con metodologías robustas y ágiles para empresas modernas.</p>
                 <a href="#software-details" class="font-semibold text-primary group-hover:text-primary-hover flex items-center gap-2 transition-colors">
                     <span data-i18n="svc.learnmore">Saber Más</span> <i class="fa-solid fa-arrow-right text-sm transition-transform group-hover:translate-x-1"></i>
                 </a>
             </div>
 
             <!-- Service Card 2 -->
-            <div class="bg-white rounded-3xl p-10 shadow-xl shadow-slate-200/50 hover:-translate-y-3 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center group reveal" style="transition-delay: 100ms;">
-                <div class="w-20 h-20 bg-gradient-to-br from-white to-slate-100 rounded-2xl flex items-center justify-center mb-8 shadow-3d animate-float delay-1000">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-10 shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 hover:-translate-y-3 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center group reveal" style="transition-delay: 100ms;">
+                <div class="w-20 h-20 bg-gradient-to-br from-white to-slate-100 dark:from-slate-700 dark:to-slate-800 rounded-2xl flex items-center justify-center mb-8 shadow-3d animate-float delay-1000">
                     <i class="fa-solid fa-shield-halved text-3xl text-primary drop-shadow-md"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-3 text-slate-800" data-i18n="svc.cyber.badge">CIBERSEGURIDAD</h3>
-                <p class="text-slate-500 mb-6 flex-grow" data-i18n="svc.cyber.desc">Protección avanzada contra amenazas, monitoreo proactivo y auditorías de seguridad profundas.</p>
+                <h3 class="text-xl font-bold mb-3 text-slate-800 dark:text-slate-100" data-i18n="svc.cyber.badge">CIBERSEGURIDAD</h3>
+                <p class="text-slate-500 dark:text-slate-400 mb-6 flex-grow" data-i18n="svc.cyber.desc">Protección avanzada contra amenazas, monitoreo proactivo y auditorías de seguridad profundas.</p>
                 <a href="#cyber-details" class="font-semibold text-primary group-hover:text-primary-hover flex items-center gap-2 transition-colors">
                     <span data-i18n="svc.learnmore">Saber Más</span> <i class="fa-solid fa-arrow-right text-sm transition-transform group-hover:translate-x-1"></i>
                 </a>
             </div>
 
             <!-- Service Card 3 -->
-            <div class="bg-white rounded-3xl p-10 shadow-xl shadow-slate-200/50 hover:-translate-y-3 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center group reveal" style="transition-delay: 200ms;">
-                <div class="w-20 h-20 bg-gradient-to-br from-white to-slate-100 rounded-2xl flex items-center justify-center mb-8 shadow-3d animate-float delay-2000">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-10 shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 hover:-translate-y-3 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center group reveal" style="transition-delay: 200ms;">
+                <div class="w-20 h-20 bg-gradient-to-br from-white to-slate-100 dark:from-slate-700 dark:to-slate-800 rounded-2xl flex items-center justify-center mb-8 shadow-3d animate-float delay-2000">
                     <i class="fa-solid fa-network-wired text-3xl text-primary drop-shadow-md"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-3 text-slate-800" data-i18n="svc.consult.badge">CONSULTORÍA</h3>
-                <p class="text-slate-500 mb-6 flex-grow" data-i18n="svc.consult.desc">Asesoría estratégica experta para navegar y conquistar su transformación digital.</p>
+                <h3 class="text-xl font-bold mb-3 text-slate-800 dark:text-slate-100" data-i18n="svc.consult.badge">CONSULTORÍA</h3>
+                <p class="text-slate-500 dark:text-slate-400 mb-6 flex-grow" data-i18n="svc.consult.desc">Asesoría estratégica experta para navegar y conquistar su transformación digital.</p>
                 <a href="#consultancy-details" class="font-semibold text-primary group-hover:text-primary-hover flex items-center gap-2 transition-colors">
                     <span data-i18n="svc.learnmore">Saber Más</span> <i class="fa-solid fa-arrow-right text-sm transition-transform group-hover:translate-x-1"></i>
                 </a>
@@ -248,27 +290,27 @@
                     <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-white font-bold text-base mb-6">
                         <i class="fa-solid fa-users"></i> <span data-i18n="nav.about">NOSOTROS</span>
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6 leading-tight" data-i18n-html="about.heading">Precisión Técnica, <br>Compromiso Real</h2>
-                    <p class="text-lg text-slate-600 mb-8" data-i18n="about.desc">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-50 mb-6 leading-tight" data-i18n-html="about.heading">Precisión Técnica, <br>Compromiso Real</h2>
+                    <p class="text-lg text-slate-600 dark:text-slate-300 mb-8" data-i18n="about.desc">
                         NAAT SYSTEM nace de la convicción de que la tecnología debe ser tan segura como funcional. Somos un equipo de ingenieros senior especializados en software y ciberseguridad que no externaliza la calidad: cada arquitectura, cada línea de código y cada auditoría se construyen bajo el mismo estándar de excelencia que exigimos para nuestros propios sistemas.
                     </p>
 
                     <div class="grid grid-cols-3 gap-6 mb-8">
                         <div>
                             <div class="text-3xl font-extrabold text-primary mb-1">+7</div>
-                            <div class="text-sm text-slate-500 font-medium" data-i18n="about.stat1">Certificaciones Internacionales</div>
+                            <div class="text-sm text-slate-500 dark:text-slate-400 font-medium" data-i18n="about.stat1">Certificaciones Internacionales</div>
                         </div>
                         <div>
                             <div class="text-3xl font-extrabold text-primary mb-1">+12</div>
-                            <div class="text-sm text-slate-500 font-medium" data-i18n="about.stat2">Tecnologías Dominadas</div>
+                            <div class="text-sm text-slate-500 dark:text-slate-400 font-medium" data-i18n="about.stat2">Tecnologías Dominadas</div>
                         </div>
                         <div>
                             <div class="text-3xl font-extrabold text-primary mb-1">24/7</div>
-                            <div class="text-sm text-slate-500 font-medium" data-i18n="about.stat3">Monitoreo y Soporte</div>
+                            <div class="text-sm text-slate-500 dark:text-slate-400 font-medium" data-i18n="about.stat3">Monitoreo y Soporte</div>
                         </div>
                     </div>
 
-                    <a href="#certifications" class="bg-slate-900 text-white px-8 py-4 rounded-full font-bold hover:bg-primary transition-colors shadow-lg" data-i18n="about.cta">Ver Certificaciones del Equipo</a>
+                    <a href="#certifications" class="bg-slate-900 dark:bg-primary text-white px-8 py-4 rounded-full font-bold hover:bg-primary transition-colors shadow-lg" data-i18n="about.cta">Ver Certificaciones del Equipo</a>
                 </div>
                 <div class="flex-1 w-full relative reveal-right">
                     <div class="absolute inset-0 bg-primary/20 rounded-3xl transform translate-x-4 translate-y-4 -z-10"></div>
@@ -294,8 +336,8 @@
 
             <div class="text-center max-w-2xl mx-auto reveal">
                 <div class="w-20 h-1.5 bg-primary rounded-full mx-auto mb-6"></div>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4" data-i18n="details.title">Arquitectura de Soluciones</h2>
-                <p class="text-lg text-slate-500" data-i18n="details.subtitle">Metodologías rigurosas aplicadas a los desafíos tecnológicos más complejos. Nuestro ecosistema de servicios está diseñado para escalar de forma segura.</p>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-50 mb-4" data-i18n="details.title">Arquitectura de Soluciones</h2>
+                <p class="text-lg text-slate-500 dark:text-slate-400" data-i18n="details.subtitle">Metodologías rigurosas aplicadas a los desafíos tecnológicos más complejos. Nuestro ecosistema de servicios está diseñado para escalar de forma segura.</p>
             </div>
 
             <!-- Software Development Section -->
@@ -304,16 +346,16 @@
                     <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-white font-bold text-base mb-6">
                         <i class="fa-solid fa-code"></i> <span data-i18n="svc.software.badge">SOFTWARE</span>
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6 leading-tight" data-i18n-html="software.heading">Diseñado para Escalar, <br>Construido para el Rendimiento</h2>
-                    <p class="text-lg text-slate-600 mb-6" data-i18n="software.desc">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-50 mb-6 leading-tight" data-i18n-html="software.heading">Diseñado para Escalar, <br>Construido para el Rendimiento</h2>
+                    <p class="text-lg text-slate-600 dark:text-slate-300 mb-6" data-i18n="software.desc">
                         Construimos soluciones de software a medida para los desafíos únicos de su negocio. Nuestros equipos de ingeniería se especializan en arquitecturas cloud-native, garantizando que sus plataformas sean rápidas, seguras y estén listas para escalar desde el primer día.
                     </p>
-                    <ul class="space-y-4 text-slate-700 font-medium mb-8">
+                    <ul class="space-y-4 text-slate-700 dark:text-slate-300 font-medium mb-8">
                         <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-primary"></i> <span data-i18n="software.li1">Aplicaciones Web y Móviles Full-Stack</span></li>
                         <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-primary"></i> <span data-i18n="software.li2">Modernización de Sistemas Heredados</span></li>
                         <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-primary"></i> <span data-i18n="software.li3">Integraciones de API sin Fisuras</span></li>
                     </ul>
-                    <a href="#contact" class="bg-slate-900 text-white px-8 py-4 rounded-full font-bold hover:bg-primary transition-colors shadow-lg" data-i18n="software.cta">Inicie su Proyecto</a>
+                    <a href="#contact" class="bg-slate-900 dark:bg-primary text-white px-8 py-4 rounded-full font-bold hover:bg-primary transition-colors shadow-lg" data-i18n="software.cta">Inicie su Proyecto</a>
                 </div>
                 <div class="flex-1 w-full relative reveal-right">
                     <div class="absolute inset-0 bg-primary/20 rounded-3xl transform translate-x-4 translate-y-4 -z-10"></div>
@@ -339,16 +381,16 @@
                     <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-white font-bold text-base mb-6">
                         <i class="fa-solid fa-shield-halved"></i> <span data-i18n="svc.cyber.badge">CIBERSEGURIDAD</span>
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6 leading-tight" data-i18n-html="cyber.heading">Arquitectura de Seguridad <br>Zero-Trust</h2>
-                    <p class="text-lg text-slate-600 mb-6" data-i18n="cyber.desc">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-50 mb-6 leading-tight" data-i18n-html="cyber.heading">Arquitectura de Seguridad <br>Zero-Trust</h2>
+                    <p class="text-lg text-slate-600 dark:text-slate-300 mb-6" data-i18n="cyber.desc">
                         Proteja sus activos digitales más valiosos con protocolos de ciberseguridad de nivel militar. Identificamos vulnerabilidades de forma proactiva, monitoreamos amenazas en tiempo real y fortalecemos su infraestructura contra los ciberataques modernos.
                     </p>
-                    <ul class="space-y-4 text-slate-700 font-medium mb-8">
+                    <ul class="space-y-4 text-slate-700 dark:text-slate-300 font-medium mb-8">
                         <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-primary"></i> <span data-i18n="cyber.li1">Pruebas de Penetración Avanzadas</span></li>
                         <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-primary"></i> <span data-i18n="cyber.li2">Monitoreo y Respuesta ante Amenazas 24/7</span></li>
                         <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-primary"></i> <span data-i18n="cyber.li3">Cumplimiento de Datos y Auditorías de Seguridad</span></li>
                     </ul>
-                    <a href="#contact" class="bg-slate-900 text-white px-8 py-4 rounded-full font-bold hover:bg-primary transition-colors shadow-lg" data-i18n="cyber.cta">Proteja su Negocio</a>
+                    <a href="#contact" class="bg-slate-900 dark:bg-primary text-white px-8 py-4 rounded-full font-bold hover:bg-primary transition-colors shadow-lg" data-i18n="cyber.cta">Proteja su Negocio</a>
                 </div>
                 <div class="flex-1 w-full relative reveal-left">
                     <div class="absolute inset-0 bg-primary/20 rounded-3xl transform -translate-x-4 translate-y-4 -z-10"></div>
@@ -374,16 +416,16 @@
                     <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-white font-bold text-base mb-6">
                         <i class="fa-solid fa-network-wired"></i> <span data-i18n="consult.badge">CONSULTORÍA ESTRATÉGICA</span>
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6 leading-tight" data-i18n-html="consult.heading">Navegando su Transformación <br>Digital</h2>
-                    <p class="text-lg text-slate-600 mb-6" data-i18n="consult.desc">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-50 mb-6 leading-tight" data-i18n-html="consult.heading">Navegando su Transformación <br>Digital</h2>
+                    <p class="text-lg text-slate-600 dark:text-slate-300 mb-6" data-i18n="consult.desc">
                         Cerramos la brecha entre los objetivos de negocio y la ejecución tecnológica. Nuestros consultores expertos ofrecen hojas de ruta digitales accionables para optimizar sus operaciones, reducir costos y acelerar su tiempo de llegada al mercado.
                     </p>
-                    <ul class="space-y-4 text-slate-700 font-medium mb-8">
+                    <ul class="space-y-4 text-slate-700 dark:text-slate-300 font-medium mb-8">
                         <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-primary"></i> <span data-i18n="consult.li1">Estrategia de TI y Planificación de Infraestructura</span></li>
                         <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-primary"></i> <span data-i18n="consult.li2">Consultoría en Automatización de Flujos de Trabajo</span></li>
                         <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-primary"></i> <span data-i18n="consult.li3">Optimización de Recursos y Costos</span></li>
                     </ul>
-                    <a href="#contact" class="bg-slate-900 text-white px-8 py-4 rounded-full font-bold hover:bg-primary transition-colors shadow-lg" data-i18n="consult.cta">Consulte con Nosotros</a>
+                    <a href="#contact" class="bg-slate-900 dark:bg-primary text-white px-8 py-4 rounded-full font-bold hover:bg-primary transition-colors shadow-lg" data-i18n="consult.cta">Consulte con Nosotros</a>
                 </div>
                 <div class="flex-1 w-full relative reveal-right">
                     <div class="absolute inset-0 bg-primary/20 rounded-3xl transform translate-x-4 translate-y-4 -z-10"></div>
@@ -406,56 +448,56 @@
         <!-- ================= END DETAILED SECTIONS ================= -->
 
         <!-- Why NAAT System -->
-        <section id="pricing" class="max-w-7xl mx-auto px-6 py-24 bg-slate-50 border-t border-slate-200">
+        <section id="pricing" class="max-w-7xl mx-auto px-6 py-24 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
             <div class="text-center max-w-2xl mx-auto mb-16 reveal">
                 <div class="w-20 h-1.5 bg-primary rounded-full mx-auto mb-6"></div>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4" data-i18n="why.title">¿Por qué NAAT SYSTEM?</h2>
-                <p class="text-lg text-slate-500" data-i18n="why.subtitle">Construimos sobre pilares de precisión técnica y rigor metodológico.</p>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-50 mb-4" data-i18n="why.title">¿Por qué NAAT SYSTEM?</h2>
+                <p class="text-lg text-slate-500 dark:text-slate-400" data-i18n="why.subtitle">Construimos sobre pilares de precisión técnica y rigor metodológico.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+            <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200 dark:divide-slate-800">
                 <!-- Expertise Técnico -->
                 <div class="pl-6 border-l-2 border-primary md:pr-10 pb-10 md:pb-0 reveal">
                     <i class="fa-solid fa-brain text-3xl text-primary mb-6 block"></i>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3" data-i18n="why.card1.title">Expertise Técnico</h3>
-                    <p class="text-slate-500" data-i18n="why.card1.desc">Ingenieros senior especializados en arquitecturas distribuidas y seguridad a nivel de kernel. No externalizamos la calidad.</p>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50 mb-3" data-i18n="why.card1.title">Expertise Técnico</h3>
+                    <p class="text-slate-500 dark:text-slate-400" data-i18n="why.card1.desc">Ingenieros senior especializados en arquitecturas distribuidas y seguridad a nivel de kernel. No externalizamos la calidad.</p>
                 </div>
 
                 <!-- Seguridad Nativa -->
                 <div class="pl-6 md:px-10 pt-10 md:pt-0 pb-10 md:pb-0 reveal" style="transition-delay: 100ms;">
                     <i class="fa-solid fa-lock text-3xl text-primary mb-6 block"></i>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3" data-i18n="why.card2.title">Seguridad Nativa</h3>
-                    <p class="text-slate-500" data-i18n="why.card2.desc">La seguridad no es un añadido final; se diseña en la fase de arquitectura (Security by Design) en cada línea de código.</p>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50 mb-3" data-i18n="why.card2.title">Seguridad Nativa</h3>
+                    <p class="text-slate-500 dark:text-slate-400" data-i18n="why.card2.desc">La seguridad no es un añadido final; se diseña en la fase de arquitectura (Security by Design) en cada línea de código.</p>
                 </div>
 
                 <!-- Escalabilidad -->
                 <div class="pl-6 md:pl-10 pt-10 md:pt-0 reveal" style="transition-delay: 200ms;">
                     <i class="fa-solid fa-diagram-project text-3xl text-primary mb-6 block"></i>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3" data-i18n="why.card3.title">Escalabilidad</h3>
-                    <p class="text-slate-500" data-i18n="why.card3.desc">Sistemas preparados para crecer. Infraestructura como código (IaC) para despliegues predecibles y elásticos.</p>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50 mb-3" data-i18n="why.card3.title">Escalabilidad</h3>
+                    <p class="text-slate-500 dark:text-slate-400" data-i18n="why.card3.desc">Sistemas preparados para crecer. Infraestructura como código (IaC) para despliegues predecibles y elásticos.</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200 mt-16 pt-16 border-t border-slate-200">
+            <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200 dark:divide-slate-800 mt-16 pt-16 border-t border-slate-200 dark:border-slate-800">
                 <!-- Detección de Amenazas -->
                 <div class="pl-6 border-l-2 border-primary md:pr-10 pb-10 md:pb-0 reveal">
                     <i class="fa-solid fa-satellite-dish text-3xl text-primary mb-6 block"></i>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3" data-i18n="why.card4.title">Detección de Amenazas 24/7</h3>
-                    <p class="text-slate-500" data-i18n="why.card4.desc">Monitoreo continuo con inteligencia de amenazas en tiempo real para detectar y neutralizar ataques antes de que impacten su operación.</p>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50 mb-3" data-i18n="why.card4.title">Detección de Amenazas 24/7</h3>
+                    <p class="text-slate-500 dark:text-slate-400" data-i18n="why.card4.desc">Monitoreo continuo con inteligencia de amenazas en tiempo real para detectar y neutralizar ataques antes de que impacten su operación.</p>
                 </div>
 
                 <!-- Cumplimiento Normativo -->
                 <div class="pl-6 md:px-10 pt-10 md:pt-0 pb-10 md:pb-0 reveal" style="transition-delay: 100ms;">
                     <i class="fa-solid fa-scale-balanced text-3xl text-primary mb-6 block"></i>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3" data-i18n="why.card5.title">Cumplimiento Normativo</h3>
-                    <p class="text-slate-500" data-i18n="why.card5.desc">Alineación con estándares ISO 27001, GDPR y normativas del sector para proteger datos sensibles y evitar sanciones.</p>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50 mb-3" data-i18n="why.card5.title">Cumplimiento Normativo</h3>
+                    <p class="text-slate-500 dark:text-slate-400" data-i18n="why.card5.desc">Alineación con estándares ISO 27001, GDPR y normativas del sector para proteger datos sensibles y evitar sanciones.</p>
                 </div>
 
                 <!-- Respuesta a Incidentes -->
                 <div class="pl-6 md:pl-10 pt-10 md:pt-0 reveal" style="transition-delay: 200ms;">
                     <i class="fa-solid fa-bolt text-3xl text-primary mb-6 block"></i>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3" data-i18n="why.card6.title">Respuesta a Incidentes</h3>
-                    <p class="text-slate-500" data-i18n="why.card6.desc">Protocolos de respuesta rápida y forense digital para contener brechas de seguridad y minimizar el tiempo de inactividad.</p>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50 mb-3" data-i18n="why.card6.title">Respuesta a Incidentes</h3>
+                    <p class="text-slate-500 dark:text-slate-400" data-i18n="why.card6.desc">Protocolos de respuesta rápida y forense digital para contener brechas de seguridad y minimizar el tiempo de inactividad.</p>
                 </div>
             </div>
         </section>
@@ -464,13 +506,13 @@
         <section id="technologies" class="max-w-7xl mx-auto px-6 py-24">
             <div class="text-center max-w-2xl mx-auto mb-16 reveal">
                 <div class="w-20 h-1.5 bg-primary rounded-full mx-auto mb-6"></div>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4" data-i18n="tech.title">Nuestro Stack Tecnológico</h2>
-                <p class="text-lg text-slate-500" data-i18n="tech.subtitle">Dominamos las tecnologías líderes de la industria para construir soluciones robustas, modernas y de alto rendimiento.</p>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-50 mb-4" data-i18n="tech.title">Nuestro Stack Tecnológico</h2>
+                <p class="text-lg text-slate-500 dark:text-slate-400" data-i18n="tech.subtitle">Dominamos las tecnologías líderes de la industria para construir soluciones robustas, modernas y de alto rendimiento.</p>
             </div>
 
             <div class="flex items-center gap-3 mb-6 reveal">
                 <i class="fa-solid fa-code text-primary text-xl"></i>
-                <h3 class="text-lg font-bold text-slate-800 uppercase tracking-wide" data-i18n="tech.group.software">Software</h3>
+                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wide" data-i18n="tech.group.software">Software</h3>
             </div>
 
             <div class="tech-marquee-mask overflow-hidden reveal">
@@ -478,151 +520,151 @@
                     <!-- Set 1 -->
                     <div class="flex items-center">
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-brands fa-react text-4xl" style="color:#61DAFB;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">React</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">React</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-brands fa-angular text-4xl" style="color:#DD0031;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Angular</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Angular</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <span class="text-xl font-extrabold" style="color:#512BD4;">.NET</span>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">.NET</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">.NET</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <span class="text-2xl font-extrabold" style="color:#68217A;">C#</span>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">C#</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">C#</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-database text-4xl" style="color:#00618A;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">SQL</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">SQL</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <span class="text-xl font-extrabold" style="color:#3178C6;">TS</span>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">TypeScript</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">TypeScript</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-brands fa-html5 text-4xl" style="color:#E34F26;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">HTML5</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">HTML5</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-brands fa-css3-alt text-4xl" style="color:#1572B6;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">CSS3</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">CSS3</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-wind text-4xl" style="color:#38BDF8;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Tailwind CSS</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Tailwind CSS</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-bolt text-4xl" style="color:#646CFF;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Vite</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Vite</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <span class="text-3xl font-extrabold" style="color:#000000;">N</span>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Next.js</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Next.js</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-brands fa-bootstrap text-4xl" style="color:#7952B3;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Bootstrap</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Bootstrap</span>
                         </div>
                     </div>
                     <!-- Set 2 (duplicate for seamless loop) -->
                     <div class="flex items-center" aria-hidden="true">
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-brands fa-react text-4xl" style="color:#61DAFB;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">React</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">React</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-brands fa-angular text-4xl" style="color:#DD0031;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Angular</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Angular</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <span class="text-xl font-extrabold" style="color:#512BD4;">.NET</span>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">.NET</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">.NET</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <span class="text-2xl font-extrabold" style="color:#68217A;">C#</span>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">C#</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">C#</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-database text-4xl" style="color:#00618A;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">SQL</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">SQL</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <span class="text-xl font-extrabold" style="color:#3178C6;">TS</span>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">TypeScript</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">TypeScript</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-brands fa-html5 text-4xl" style="color:#E34F26;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">HTML5</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">HTML5</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-brands fa-css3-alt text-4xl" style="color:#1572B6;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">CSS3</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">CSS3</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-wind text-4xl" style="color:#38BDF8;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Tailwind CSS</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Tailwind CSS</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-bolt text-4xl" style="color:#646CFF;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Vite</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Vite</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <span class="text-3xl font-extrabold" style="color:#000000;">N</span>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Next.js</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Next.js</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-brands fa-bootstrap text-4xl" style="color:#7952B3;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Bootstrap</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Bootstrap</span>
                         </div>
                     </div>
                 </div>
@@ -630,7 +672,7 @@
 
             <div class="flex items-center gap-3 mt-16 mb-6 reveal">
                 <i class="fa-solid fa-shield-halved text-primary text-xl"></i>
-                <h3 class="text-lg font-bold text-slate-800 uppercase tracking-wide" data-i18n="tech.group.cyber">Ciberseguridad</h3>
+                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wide" data-i18n="tech.group.cyber">Ciberseguridad</h3>
             </div>
 
             <div class="tech-marquee-mask overflow-hidden reveal">
@@ -638,103 +680,103 @@
                     <!-- Set 1 -->
                     <div class="flex items-center">
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-brands fa-linux text-4xl" style="color:#557C94;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Kali Linux</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Kali Linux</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-network-wired text-4xl" style="color:#1679A7;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Wireshark</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Wireshark</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-satellite-dish text-4xl" style="color:#4E9A06;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Nmap</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Nmap</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-bug text-4xl" style="color:#E4322E;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Metasploit</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Metasploit</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-spider text-4xl" style="color:#FF6633;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Burp Suite</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Burp Suite</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <span class="text-3xl font-extrabold" style="color:#65A637;">S</span>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Splunk</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Splunk</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-fire text-4xl" style="color:#EE3124;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Fortinet</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Fortinet</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <span class="text-lg font-extrabold" style="color:#FF6600;">ZAP</span>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">OWASP ZAP</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">OWASP ZAP</span>
                         </div>
                     </div>
                     <!-- Set 2 (duplicate for seamless loop) -->
                     <div class="flex items-center" aria-hidden="true">
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-brands fa-linux text-4xl" style="color:#557C94;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Kali Linux</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Kali Linux</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-network-wired text-4xl" style="color:#1679A7;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Wireshark</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Wireshark</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-satellite-dish text-4xl" style="color:#4E9A06;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Nmap</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Nmap</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-bug text-4xl" style="color:#E4322E;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Metasploit</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Metasploit</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-spider text-4xl" style="color:#FF6633;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Burp Suite</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Burp Suite</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <span class="text-3xl font-extrabold" style="color:#65A637;">S</span>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Splunk</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Splunk</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <i class="fa-solid fa-fire text-4xl" style="color:#EE3124;"></i>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">Fortinet</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">Fortinet</span>
                         </div>
                         <div class="flex flex-col items-center gap-3 mx-8 shrink-0 w-24">
-                            <div class="w-20 h-20 bg-white rounded-2xl shadow-md shadow-slate-200/70 flex items-center justify-center">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/70 dark:shadow-slate-900/70 flex items-center justify-center">
                                 <span class="text-lg font-extrabold" style="color:#FF6600;">ZAP</span>
                             </div>
-                            <span class="text-sm font-semibold text-slate-600">OWASP ZAP</span>
+                            <span class="text-sm font-semibold text-slate-600 dark:text-slate-300">OWASP ZAP</span>
                         </div>
                     </div>
                 </div>
@@ -742,17 +784,17 @@
         </section>
 
         <!-- Certifications -->
-        <section id="certifications" class="max-w-7xl mx-auto px-6 py-24 bg-slate-50 border-t border-slate-200">
+        <section id="certifications" class="max-w-7xl mx-auto px-6 py-24 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
             <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12 reveal">
                 <div class="max-w-2xl">
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4" data-i18n="cert.title">Certificaciones de Nuestro Equipo</h2>
-                    <p class="text-lg text-slate-500" data-i18n="cert.subtitle">Invertimos en la formación continua de nuestros ingenieros, respaldada por certificaciones oficiales de la industria.</p>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-50 mb-4" data-i18n="cert.title">Certificaciones de Nuestro Equipo</h2>
+                    <p class="text-lg text-slate-500 dark:text-slate-400" data-i18n="cert.subtitle">Invertimos en la formación continua de nuestros ingenieros, respaldada por certificaciones oficiales de la industria.</p>
                 </div>
                 <div class="flex items-center gap-3 shrink-0">
-                    <button type="button" id="cert-prev" aria-label="Previous" class="w-14 h-14 rounded-full bg-white shadow-md border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition-all">
+                    <button type="button" id="cert-prev" aria-label="Previous" class="w-14 h-14 rounded-full bg-white dark:bg-slate-800 shadow-md border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-primary hover:text-white hover:border-primary transition-all">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
-                    <button type="button" id="cert-next" aria-label="Next" class="w-14 h-14 rounded-full bg-white shadow-md border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition-all">
+                    <button type="button" id="cert-next" aria-label="Next" class="w-14 h-14 rounded-full bg-white dark:bg-slate-800 shadow-md border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-primary hover:text-white hover:border-primary transition-all">
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>
@@ -760,82 +802,82 @@
 
             <div id="cert-carousel" class="flex gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar pb-4 reveal">
                 <!-- PSM I -->
-                <div class="bg-white rounded-3xl p-8 shadow-lg shadow-slate-200/50 border border-slate-100 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style="background-color:#00A88E1A;">
                         <i class="fa-solid fa-arrows-rotate text-2xl" style="color:#00A88E;"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-1">PSM I</h3>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-50 mb-1">PSM I</h3>
                     <p class="text-sm font-semibold text-primary mb-3">Scrum.org</p>
-                    <p class="text-slate-500 text-sm" data-i18n="cert.psm.desc">Professional Scrum Master I: dominio comprobado de los fundamentos de Scrum y las prácticas ágiles de gestión de proyectos.</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm" data-i18n="cert.psm.desc">Professional Scrum Master I: dominio comprobado de los fundamentos de Scrum y las prácticas ágiles de gestión de proyectos.</p>
                 </div>
 
                 <!-- Azure AZ-204 -->
-                <div class="bg-white rounded-3xl p-8 shadow-lg shadow-slate-200/50 border border-slate-100 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style="background-color:#0078D41A;">
                         <i class="fa-brands fa-microsoft text-2xl" style="color:#0078D4;"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-1">AZ-204</h3>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-50 mb-1">AZ-204</h3>
                     <p class="text-sm font-semibold text-primary mb-3">Microsoft Azure</p>
-                    <p class="text-slate-500 text-sm" data-i18n="cert.az.desc">Azure Developer Associate: diseño, construcción y despliegue de soluciones cloud-native sobre la plataforma Microsoft Azure.</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm" data-i18n="cert.az.desc">Azure Developer Associate: diseño, construcción y despliegue de soluciones cloud-native sobre la plataforma Microsoft Azure.</p>
                 </div>
 
                 <!-- Cisco -->
-                <div class="bg-white rounded-3xl p-8 shadow-lg shadow-slate-200/50 border border-slate-100 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style="background-color:#049FD91A;">
                         <i class="fa-solid fa-network-wired text-2xl" style="color:#049FD9;"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-1">CCNA</h3>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-50 mb-1">CCNA</h3>
                     <p class="text-sm font-semibold text-primary mb-3">Cisco</p>
-                    <p class="text-slate-500 text-sm" data-i18n="cert.cisco.desc">Cisco Certified Network Associate: fundamentos sólidos en redes, seguridad de infraestructura y conectividad empresarial.</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm" data-i18n="cert.cisco.desc">Cisco Certified Network Associate: fundamentos sólidos en redes, seguridad de infraestructura y conectividad empresarial.</p>
                 </div>
 
                 <!-- AWS Certified Developer -->
-                <div class="bg-white rounded-3xl p-8 shadow-lg shadow-slate-200/50 border border-slate-100 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style="background-color:#FF99001A;">
                         <i class="fa-brands fa-aws text-2xl" style="color:#FF9900;"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-1">AWS Developer</h3>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-50 mb-1">AWS Developer</h3>
                     <p class="text-sm font-semibold text-primary mb-3">Amazon Web Services</p>
-                    <p class="text-slate-500 text-sm" data-i18n="cert.aws.desc">AWS Certified Developer – Associate: desarrollo, despliegue y depuración de aplicaciones basadas en la nube de Amazon Web Services.</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm" data-i18n="cert.aws.desc">AWS Certified Developer – Associate: desarrollo, despliegue y depuración de aplicaciones basadas en la nube de Amazon Web Services.</p>
                 </div>
 
                 <!-- Oracle Java SE -->
-                <div class="bg-white rounded-3xl p-8 shadow-lg shadow-slate-200/50 border border-slate-100 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style="background-color:#F898201A;">
                         <i class="fa-brands fa-java text-2xl" style="color:#F89820;"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-1">Java SE</h3>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-50 mb-1">Java SE</h3>
                     <p class="text-sm font-semibold text-primary mb-3">Oracle</p>
-                    <p class="text-slate-500 text-sm" data-i18n="cert.java.desc">Oracle Certified Professional: Java SE Programmer: dominio del lenguaje Java y las bases de la programación orientada a objetos.</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm" data-i18n="cert.java.desc">Oracle Certified Professional: Java SE Programmer: dominio del lenguaje Java y las bases de la programación orientada a objetos.</p>
                 </div>
 
                 <!-- CompTIA Security+ -->
-                <div class="bg-white rounded-3xl p-8 shadow-lg shadow-slate-200/50 border border-slate-100 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style="background-color:#C8202F1A;">
                         <i class="fa-solid fa-user-shield text-2xl" style="color:#C8202F;"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-1">Security+</h3>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-50 mb-1">Security+</h3>
                     <p class="text-sm font-semibold text-primary mb-3">CompTIA</p>
-                    <p class="text-slate-500 text-sm" data-i18n="cert.secplus.desc">CompTIA Security+: competencias fundamentales en seguridad de redes, gestión de riesgos y respuesta a incidentes.</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm" data-i18n="cert.secplus.desc">CompTIA Security+: competencias fundamentales en seguridad de redes, gestión de riesgos y respuesta a incidentes.</p>
                 </div>
 
                 <!-- Certified Ethical Hacker -->
-                <div class="bg-white rounded-3xl p-8 shadow-lg shadow-slate-200/50 border border-slate-100 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style="background-color:#8B1E3F1A;">
                         <i class="fa-solid fa-user-secret text-2xl" style="color:#8B1E3F;"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-1">CEH</h3>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-50 mb-1">CEH</h3>
                     <p class="text-sm font-semibold text-primary mb-3">EC-Council</p>
-                    <p class="text-slate-500 text-sm" data-i18n="cert.ceh.desc">Certified Ethical Hacker: técnicas ofensivas de hacking ético para identificar y remediar vulnerabilidades antes que un atacante real.</p>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm" data-i18n="cert.ceh.desc">Certified Ethical Hacker: técnicas ofensivas de hacking ético para identificar y remediar vulnerabilidades antes que un atacante real.</p>
                 </div>
 
                 <!-- Más certificaciones (placeholder extensible) -->
-                <div class="rounded-3xl p-8 border-2 border-dashed border-slate-300 flex flex-col items-center text-center justify-center shrink-0 w-72 snap-start">
-                    <div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mb-6">
-                        <i class="fa-solid fa-plus text-2xl text-slate-400"></i>
+                <div class="rounded-3xl p-8 border-2 border-dashed border-slate-300 dark:border-slate-600 flex flex-col items-center text-center justify-center shrink-0 w-72 snap-start">
+                    <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-plus text-2xl text-slate-400 dark:text-slate-500"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-500 mb-1" data-i18n="cert.more.title">Más Certificaciones</h3>
-                    <p class="text-slate-400 text-sm" data-i18n="cert.more.desc">Nuestro equipo continúa certificándose en las últimas tecnologías y metodologías del mercado.</p>
+                    <h3 class="text-lg font-bold text-slate-500 dark:text-slate-400 mb-1" data-i18n="cert.more.title">Más Certificaciones</h3>
+                    <p class="text-slate-400 dark:text-slate-500 text-sm" data-i18n="cert.more.desc">Nuestro equipo continúa certificándose en las últimas tecnologías y metodologías del mercado.</p>
                 </div>
             </div>
         </section>
@@ -848,40 +890,40 @@
                     <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-white font-bold text-base mb-6">
                         <i class="fa-solid fa-headset"></i> <span data-i18n="contact.eyebrow">CONTACTO</span>
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4" data-i18n="contact.section.title">Hablemos de su Próximo Proyecto</h2>
-                    <p class="text-slate-500 mb-10" data-i18n="contact.section.subtitle">Contáctenos y descubra cómo nuestro equipo de expertos puede diseñar la solución de software y ciberseguridad que su empresa necesita.</p>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-50 mb-4" data-i18n="contact.section.title">Hablemos de su Próximo Proyecto</h2>
+                    <p class="text-slate-500 dark:text-slate-400 mb-10" data-i18n="contact.section.subtitle">Contáctenos y descubra cómo nuestro equipo de expertos puede diseñar la solución de software y ciberseguridad que su empresa necesita.</p>
 
                     <div class="space-y-7">
                         <div class="flex items-start gap-4">
                             <i class="fa-solid fa-building text-primary text-xl mt-1 w-5 text-center"></i>
                             <div>
-                                <p class="font-bold text-slate-900" data-i18n="contact.findus.title">Encuéntranos</p>
-                                <p class="text-slate-500" data-i18n="contact.hq.desc">Tech District, Edificio Naat, Planta 4.</p>
+                                <p class="font-bold text-slate-900 dark:text-slate-100" data-i18n="contact.findus.title">Encuéntranos</p>
+                                <p class="text-slate-500 dark:text-slate-400" data-i18n="contact.hq.desc">Tech District, Edificio Naat, Planta 4.</p>
                             </div>
                         </div>
 
                         <div class="flex items-start gap-4">
                             <i class="fa-solid fa-phone text-primary text-xl mt-1 w-5 text-center"></i>
                             <div>
-                                <p class="font-bold text-slate-900" data-i18n="contact.callus.title">Llámanos</p>
-                                <p class="text-slate-500" data-i18n="contact.callus.desc">+1 (809) 555-0142</p>
+                                <p class="font-bold text-slate-900 dark:text-slate-100" data-i18n="contact.callus.title">Llámanos</p>
+                                <p class="text-slate-500 dark:text-slate-400" data-i18n="contact.callus.desc">+1 (809) 555-0142</p>
                             </div>
                         </div>
 
                         <div class="flex items-start gap-4">
                             <i class="fa-solid fa-envelope text-primary text-xl mt-1 w-5 text-center"></i>
                             <div>
-                                <p class="font-bold text-slate-900" data-i18n="contact.mailus.title">Escríbenos</p>
-                                <p class="text-slate-500">architecture@naatsystem.com</p>
+                                <p class="font-bold text-slate-900 dark:text-slate-100" data-i18n="contact.mailus.title">Escríbenos</p>
+                                <p class="text-slate-500 dark:text-slate-400">architecture@naatsystem.com</p>
                             </div>
                         </div>
 
                         <div class="flex items-start gap-4">
                             <i class="fa-solid fa-clock text-primary text-xl mt-1 w-5 text-center"></i>
                             <div>
-                                <p class="font-bold text-slate-900" data-i18n="contact.visitus.title">Visítanos</p>
-                                <p class="text-slate-500" data-i18n="contact.visitus.days">Lunes - Viernes</p>
-                                <p class="text-slate-500" data-i18n="contact.visitus.hours">8:00 AM - 5:00 PM</p>
+                                <p class="font-bold text-slate-900 dark:text-slate-100" data-i18n="contact.visitus.title">Visítanos</p>
+                                <p class="text-slate-500 dark:text-slate-400" data-i18n="contact.visitus.days">Lunes - Viernes</p>
+                                <p class="text-slate-500 dark:text-slate-400" data-i18n="contact.visitus.hours">8:00 AM - 5:00 PM</p>
                             </div>
                         </div>
                     </div>
@@ -889,26 +931,26 @@
 
                 <!-- Right Column / Form -->
                 <div class="lg:col-span-3 reveal-right">
-                    <form class="bg-white rounded-3xl border border-slate-200 shadow-lg shadow-slate-200/50 p-8 lg:p-10 space-y-6">
+                    <form class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 p-8 lg:p-10 space-y-6">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div>
-                                <label class="block font-bold text-slate-800 mb-2" data-i18n="form.name">Nombre y Apellidos</label>
-                                <input type="text" placeholder="John Doe" data-i18n-placeholder="form.name.placeholder" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <label class="block font-bold text-slate-800 dark:text-slate-200 mb-2" data-i18n="form.name">Nombre y Apellidos</label>
+                                <input type="text" placeholder="John Doe" data-i18n-placeholder="form.name.placeholder" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-3 text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary">
                             </div>
                             <div>
-                                <label class="block font-bold text-slate-800 mb-2" data-i18n="form.company">Empresa</label>
-                                <input type="text" placeholder="Compañía S.A." data-i18n-placeholder="form.company.placeholder" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary">
+                                <label class="block font-bold text-slate-800 dark:text-slate-200 mb-2" data-i18n="form.company">Empresa</label>
+                                <input type="text" placeholder="Compañía S.A." data-i18n-placeholder="form.company.placeholder" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-3 text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary">
                             </div>
                         </div>
 
                         <div>
-                            <label class="block font-bold text-slate-800 mb-2" data-i18n="form.email">Correo Electrónico</label>
-                            <input type="email" placeholder="john@empresa.com" data-i18n-placeholder="form.email.placeholder" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary">
+                            <label class="block font-bold text-slate-800 dark:text-slate-200 mb-2" data-i18n="form.email">Correo Electrónico</label>
+                            <input type="email" placeholder="john@empresa.com" data-i18n-placeholder="form.email.placeholder" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-3 text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary">
                         </div>
 
                         <div>
-                            <label class="block font-bold text-slate-800 mb-2" data-i18n="form.interest">Área de Interés</label>
-                            <select class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary">
+                            <label class="block font-bold text-slate-800 dark:text-slate-200 mb-2" data-i18n="form.interest">Área de Interés</label>
+                            <select class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-3 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-primary">
                                 <option data-i18n="form.interest.opt1">Desarrollo de Software Custom</option>
                                 <option data-i18n="form.interest.opt2">Ciberseguridad</option>
                                 <option data-i18n="form.interest.opt3">Consultoría Estratégica</option>
@@ -916,8 +958,8 @@
                         </div>
 
                         <div>
-                            <label class="block font-bold text-slate-800 mb-2" data-i18n="form.details">Detalles del Requerimiento</label>
-                            <textarea rows="4" placeholder="Describa brevemente el alcance de su necesidad técnica..." data-i18n-placeholder="form.details.placeholder" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
+                            <label class="block font-bold text-slate-800 dark:text-slate-200 mb-2" data-i18n="form.details">Detalles del Requerimiento</label>
+                            <textarea rows="4" placeholder="Describa brevemente el alcance de su necesidad técnica..." data-i18n-placeholder="form.details.placeholder" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-3 text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
                         </div>
 
                         <button type="submit" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-4 rounded-lg transition-all flex items-center justify-center gap-2">
@@ -931,17 +973,17 @@
 
     <!-- Footer -->
     <footer>
-        <div class="max-w-7xl mx-auto px-6 border-t border-slate-200 py-16 grid grid-cols-1 md:grid-cols-4 gap-10 reveal">
+        <div class="max-w-7xl mx-auto px-6 border-t border-slate-200 dark:border-slate-800 py-16 grid grid-cols-1 md:grid-cols-4 gap-10 reveal">
             <div>
-                <h3 class="text-xl font-extrabold text-slate-900 tracking-tight mb-4">NAAT SYSTEM</h3>
-                <p class="text-slate-500 text-sm leading-relaxed" data-i18n="footer.copyright">
+                <h3 class="text-xl font-extrabold text-slate-900 dark:text-slate-50 tracking-tight mb-4">NAAT SYSTEM</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed" data-i18n="footer.copyright">
                     © 2024 NAAT SYSTEM. Todos los derechos reservados. Precisión en Software y Seguridad.
                 </p>
             </div>
 
             <div>
-                <h4 class="text-slate-800 font-bold text-sm tracking-wider uppercase mb-4" data-i18n="footer.services">Servicios</h4>
-                <ul class="space-y-3 text-slate-500 text-sm">
+                <h4 class="text-slate-800 dark:text-slate-200 font-bold text-sm tracking-wider uppercase mb-4" data-i18n="footer.services">Servicios</h4>
+                <ul class="space-y-3 text-slate-500 dark:text-slate-400 text-sm">
                     <li><a href="#software-details" class="hover:text-primary transition-colors" data-i18n="footer.software">Software</a></li>
                     <li><a href="#cyber-details" class="hover:text-primary transition-colors" data-i18n="footer.cyber">Ciberseguridad</a></li>
                     <li><a href="#consultancy-details" class="hover:text-primary transition-colors" data-i18n="footer.itconsult">Consultoría TI</a></li>
@@ -949,8 +991,8 @@
             </div>
 
             <div>
-                <h4 class="text-slate-800 font-bold text-sm tracking-wider uppercase mb-4" data-i18n="footer.company">Empresa</h4>
-                <ul class="space-y-3 text-slate-500 text-sm">
+                <h4 class="text-slate-800 dark:text-slate-200 font-bold text-sm tracking-wider uppercase mb-4" data-i18n="footer.company">Empresa</h4>
+                <ul class="space-y-3 text-slate-500 dark:text-slate-400 text-sm">
                     <li><a href="#about" class="hover:text-primary transition-colors" data-i18n="footer.about">Nosotros</a></li>
                     <li><a href="#technologies" class="hover:text-primary transition-colors" data-i18n="footer.technologies">Tecnologías</a></li>
                     <li><a href="#certifications" class="hover:text-primary transition-colors" data-i18n="footer.certifications">Certificados</a></li>
@@ -959,13 +1001,26 @@
             </div>
 
             <div>
-                <h4 class="text-slate-800 font-bold text-sm tracking-wider uppercase mb-4" data-i18n="footer.legal">Legal</h4>
-                <ul class="space-y-3 text-slate-500 text-sm">
+                <h4 class="text-slate-800 dark:text-slate-200 font-bold text-sm tracking-wider uppercase mb-4" data-i18n="footer.legal">Legal</h4>
+                <ul class="space-y-3 text-slate-500 dark:text-slate-400 text-sm">
                     <li><a href="#" class="hover:text-primary transition-colors" data-i18n="footer.privacy">Política de Privacidad</a></li>
                 </ul>
             </div>
         </div>
     </footer>
+
+    <!-- Script del Selector de Tema (claro/oscuro) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
+
+            themeToggle.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.toggle('dark');
+                localStorage.setItem('naat-theme', isDark ? 'dark' : 'light');
+            });
+        });
+    </script>
 
     <!-- Script de Traducciones (i18n) -->
     <script>
