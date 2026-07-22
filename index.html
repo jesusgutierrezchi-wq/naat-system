@@ -65,10 +65,10 @@
 
         /* Efecto Neumorfismo (3D) para Iconos */
         .shadow-3d {
-            box-shadow: 8px 8px 16px #d1d5db, -8px -8px 16px #ffffff;
+            box-shadow: 0 10px 20px -10px rgba(15, 23, 42, 0.18);
         }
         .dark .shadow-3d {
-            box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.45), -8px -8px 16px rgba(255, 255, 255, 0.04);
+            box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
         }
 
         /* Animaciones al hacer scroll (Reveal) */
@@ -229,7 +229,7 @@
                         <a href="#services" class="bg-primary hover:bg-primary-hover text-white font-bold py-4 px-8 rounded-full transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 flex items-center justify-center gap-2">
                             <span data-i18n="hero.cta1">Explorar Servicios</span> <i class="fa-solid fa-arrow-right text-sm"></i>
                         </a>
-                        <a href="#contact" class="bg-transparent border-2 border-white text-white font-bold py-4 px-8 rounded-full transition-all hover:bg-white hover:text-slate-900" data-i18n="hero.cta2">
+                        <a href="#contact" class="bg-transparent border border-white/50 text-white font-bold py-4 px-8 rounded-full transition-all hover:bg-white hover:border-white hover:text-slate-900" data-i18n="hero.cta2">
                             Agendar Consultoría
                         </a>
                     </div>
@@ -247,7 +247,7 @@
         <!-- Services Section with Stylish 3D Icons -->
         <section id="services" class="relative z-20 max-w-7xl mx-auto px-6 -mt-24 grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Service Card 1 -->
-            <div class="bg-white dark:bg-slate-800 rounded-3xl p-10 shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 hover:-translate-y-3 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center group reveal">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-10 shadow-md shadow-slate-200/50 dark:shadow-slate-900/50 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex flex-col items-center text-center group reveal">
                 <div class="w-20 h-20 bg-gradient-to-br from-white to-slate-100 dark:from-slate-700 dark:to-slate-800 rounded-2xl flex items-center justify-center mb-8 shadow-3d animate-float">
                     <i class="fa-solid fa-code text-3xl text-primary drop-shadow-md"></i>
                 </div>
@@ -259,7 +259,7 @@
             </div>
 
             <!-- Service Card 2 -->
-            <div class="bg-white dark:bg-slate-800 rounded-3xl p-10 shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 hover:-translate-y-3 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center group reveal" style="transition-delay: 100ms;">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-10 shadow-md shadow-slate-200/50 dark:shadow-slate-900/50 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex flex-col items-center text-center group reveal" style="transition-delay: 100ms;">
                 <div class="w-20 h-20 bg-gradient-to-br from-white to-slate-100 dark:from-slate-700 dark:to-slate-800 rounded-2xl flex items-center justify-center mb-8 shadow-3d animate-float delay-1000">
                     <i class="fa-solid fa-shield-halved text-3xl text-primary drop-shadow-md"></i>
                 </div>
@@ -271,7 +271,7 @@
             </div>
 
             <!-- Service Card 3 -->
-            <div class="bg-white dark:bg-slate-800 rounded-3xl p-10 shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 hover:-translate-y-3 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center group reveal" style="transition-delay: 200ms;">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-10 shadow-md shadow-slate-200/50 dark:shadow-slate-900/50 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex flex-col items-center text-center group reveal" style="transition-delay: 200ms;">
                 <div class="w-20 h-20 bg-gradient-to-br from-white to-slate-100 dark:from-slate-700 dark:to-slate-800 rounded-2xl flex items-center justify-center mb-8 shadow-3d animate-float delay-2000">
                     <i class="fa-solid fa-network-wired text-3xl text-primary drop-shadow-md"></i>
                 </div>
@@ -802,7 +802,7 @@
 
             <div id="cert-carousel" class="flex gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar pb-4 reveal">
                 <!-- PSM I -->
-                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style="background-color:#00A88E1A;">
                         <i class="fa-solid fa-arrows-rotate text-2xl" style="color:#00A88E;"></i>
                     </div>
@@ -812,7 +812,7 @@
                 </div>
 
                 <!-- Azure AZ-204 -->
-                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style="background-color:#0078D41A;">
                         <i class="fa-brands fa-microsoft text-2xl" style="color:#0078D4;"></i>
                     </div>
@@ -822,7 +822,7 @@
                 </div>
 
                 <!-- Cisco -->
-                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style="background-color:#049FD91A;">
                         <i class="fa-solid fa-network-wired text-2xl" style="color:#049FD9;"></i>
                     </div>
@@ -832,7 +832,7 @@
                 </div>
 
                 <!-- AWS Certified Developer -->
-                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style="background-color:#FF99001A;">
                         <i class="fa-brands fa-aws text-2xl" style="color:#FF9900;"></i>
                     </div>
@@ -842,7 +842,7 @@
                 </div>
 
                 <!-- Oracle Java SE -->
-                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style="background-color:#F898201A;">
                         <i class="fa-brands fa-java text-2xl" style="color:#F89820;"></i>
                     </div>
@@ -852,7 +852,7 @@
                 </div>
 
                 <!-- CompTIA Security+ -->
-                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style="background-color:#C8202F1A;">
                         <i class="fa-solid fa-user-shield text-2xl" style="color:#C8202F;"></i>
                     </div>
@@ -862,7 +862,7 @@
                 </div>
 
                 <!-- Certified Ethical Hacker -->
-                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 hover:-translate-y-1 hover:shadow-md transition-all duration-300 flex flex-col items-center text-center shrink-0 w-72 snap-start">
                     <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-6" style="background-color:#8B1E3F1A;">
                         <i class="fa-solid fa-user-secret text-2xl" style="color:#8B1E3F;"></i>
                     </div>
